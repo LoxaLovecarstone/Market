@@ -1,0 +1,23 @@
+package com.example.market.ui.navigation
+
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.ui.graphics.vector.ImageVector
+
+sealed class Route(val route: String) {
+    data object Home: Route("home")
+    data object Category: Route("category")
+    data object MyPage: Route("mypage")
+}
+
+enum class BottomNavItem(
+    val route: String,
+    val title: String,
+    val icon: ImageVector
+) {
+    HOME(Route.Home.route, "홈", Icons.Default.Home),
+    CATEGORY(Route.Category.route, "카테고리", Icons.Default.Search),
+    MY_PAGE(Route.MyPage.route, "내 정보", Icons.Default.Person)
+}
