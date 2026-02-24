@@ -4,7 +4,7 @@ package com.example.market.ui.common
  * [가이드] 앱 전체에서 공통으로 사용할 "화면 상태 설계도"
  * * 1. <out T>: "공변성" 적용
  * - T를 생산(return)만 하겠다는 약속입니다.
- * - 이 덕분에 UiState<Nothing>을 UiState<String> 같은 모든 타입에 대입할 수 있습니다.
+ * - UiState<Nothing>을 UiState<String> 위치에 넣을 수 있습니다.
  * - Nothing이 String의 자식이므로 UiState<Nothing> 역시 UiState<String>가 되도록 out을 해줍니다.
  * * 2. Nothing: "최하위 타입"
  * - 모든 타입(String, Int, User 등)의 자식입니다.
@@ -33,6 +33,7 @@ sealed interface UiState<out T> {
      * * @param data 실제로 UI에 그려줄 결과물 ($T$ 타입)
      */
     data class Success<T>(val data: T) : UiState<T>
+    // 코틀린은 data class의 생성자를 그대로 멤버로 활용 가능
 }
 
 /* --------------------------------------------------------------------------
