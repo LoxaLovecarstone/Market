@@ -11,11 +11,12 @@ class HomeRepositoryImpl @Inject constructor() : HomeRepository {
     override suspend fun getHomeData(): Result<HomeData> = runCatching {
         delay(1500)
 
-        // DTO 없이 바로 Domain Model(HomeData)을 생성해서 반환
         HomeData(
             banners = listOf(
-                Banner("1", "https://picsum.photos/400/200", "신상품 출시 이벤트"),
-                Banner("2", "https://picsum.photos/400/200", "주말 한정 특가 세일")
+                // 각기 다른 id를 부여하여 이미지를 구분합니다.
+                Banner("1", "https://picsum.photos/id/10/400/200", "신상품 출시 이벤트"),
+                Banner("2", "https://picsum.photos/id/20/400/200", "주말 한정 특가 세일"),
+                Banner("3", "https://picsum.photos/id/30/400/200", "신규 가입 혜택")
             ),
             products = listOf(
                 Product("1", "유기농 사과", 15000, "https://picsum.photos/200", "fruit"),
