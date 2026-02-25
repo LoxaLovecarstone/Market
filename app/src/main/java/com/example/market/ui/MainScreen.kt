@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.market.ui.common.BaseScaffold
 import com.example.market.ui.common.BaseScreen
 import com.example.market.ui.common.UiState
+import com.example.market.ui.home.HomeScreen
 import com.example.market.ui.navigation.BottomNavItem
 import com.example.market.ui.navigation.Route
 import kotlinx.coroutines.delay
@@ -58,39 +59,15 @@ fun MainScreen() {  // MainScreen은 "어디로 갈지"만 정합니다.
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Route.Home.route) {
-                // 1. 가짜 상태 관리: 초기값은 Loading
-                var uiState by remember { mutableStateOf<UiState<String>>(UiState.Loading) }
-
-                // 2. 2초 후 Success로 변경하는 비동기 로직
-                LaunchedEffect(Unit) {
-                    delay(2000)
-                    uiState = UiState.Success("마켓 데이터 로드 성공")
-                }
-
-                // 3. 공통 화면 처리기 호출
-                BaseScreen(
-                    uiState = uiState,
-                    onRetry = { /* 재시도 로직 위치 */ }
-                ) { data ->
-                    // 4. 성공 시 공통 레이아웃 호출
-                    BaseScaffold(title = "홈") { scaffoldPadding ->
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(scaffoldPadding),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(text = data)
-                        }
-                    }
-                }
+                // 뷰모델이고 상태고 뭐고 여기선 HomeScreen 하나만 호출하면 끝입니다.
+                HomeScreen()
             }
+
             composable(Route.Category.route) {
-                // 임시 카테고리 화면
                 Text("카테고리 화면")
             }
+
             composable(Route.MyPage.route) {
-                // 임시 마이페이지 화면
                 Text("마이페이지 화면")
             }
         }
