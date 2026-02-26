@@ -46,7 +46,8 @@ import kotlinx.coroutines.yield
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    onProductClick: (String) -> Unit // 클릭 리스너 추가
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -57,7 +58,8 @@ fun HomeScreen(
         BaseScaffold(title = "마켓") { scaffoldPadding ->
             HomeContent(
                 homeData = homeData,
-                modifier = Modifier.padding(scaffoldPadding)
+                modifier = Modifier.padding(scaffoldPadding),
+                onProductClick = onProductClick, // 전달
             )
         }
     }
@@ -66,7 +68,8 @@ fun HomeScreen(
 @Composable
 fun HomeContent(
     homeData: HomeData,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onProductClick: (String) -> Unit,
 ) {
     // 2열 그리드 설정
     LazyVerticalGrid(
@@ -93,7 +96,10 @@ fun HomeContent(
 
         // 3. 상품 목록 (2열 배치)
         items(homeData.products) { product ->
-            ProductItem(product = product)
+            ProductItem(
+                product = product,
+                onClick = { onProductClick(product.id) }
+            )
         }
     }
 }
@@ -154,11 +160,12 @@ fun BannerSlider(banners: List<Banner>) {
 }
 
 @Composable
-fun ProductItem(product: Product) {
+fun ProductItem(product: Product, onClick: () -> Unit) {
     Card(
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        onClick = onClick,
     ) {
         Column {
             AsyncImage(

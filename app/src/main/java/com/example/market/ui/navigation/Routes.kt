@@ -10,6 +10,10 @@ sealed class Route(val route: String) {
     data object Home: Route("home")
     data object Category: Route("category")
     data object MyPage: Route("mypage")
+
+    data object ProductDetail : Route("product/{productId}") {
+        fun createRoute(productId: String) = "product/$productId"
+    }
 }
 
 enum class BottomNavItem(
