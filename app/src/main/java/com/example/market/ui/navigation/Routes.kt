@@ -14,6 +14,8 @@ sealed class Route(val route: String) {
     data object ProductDetail : Route("product/{productId}") {
         fun createRoute(productId: String) = "product/$productId"
     }
+
+    data object Cart : Route("cart")
 }
 
 enum class BottomNavItem(
