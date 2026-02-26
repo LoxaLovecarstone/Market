@@ -14,6 +14,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.market.model.common.Product
 import com.example.market.ui.common.BaseScaffold
@@ -32,16 +33,25 @@ fun ProductDetailScreen(
     ) { product ->
         BaseScaffold(
             title = "상품 상세",
-            showBackButton = true, // 뒤로가기 버튼 활성화 (BaseScaffold에 구현 필요)
+            showBackButton = true,
             onBackClick = onBackClick
         ) { padding ->
-            ProductDetailContent(product = product, modifier = Modifier.padding(padding))
+            // 💡 여기서 viewModel의 함수를 람다로 넘겨줍니다.
+            ProductDetailContent(
+                product = product,
+                modifier = Modifier.padding(padding),
+                onAddToCart = { viewModel.addToCart() }
+            )
         }
     }
 }
 
 @Composable
-fun ProductDetailContent(product: Product, modifier: Modifier = Modifier) {
+fun ProductDetailContent(
+    product: Product,
+    modifier: Modifier = Modifier,
+    onAddToCart: () -> Unit
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -71,9 +81,8 @@ fun ProductDetailContent(product: Product, modifier: Modifier = Modifier) {
             )
             Spacer(modifier = Modifier.height(24.dp))
 
-            // 장바구니 버튼 (나중에 기능 추가)
             Button(
-                onClick = { /* 장바구니 담기 로직 */ },
+                onClick = onAddToCart,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("장바구니 담기")

@@ -19,8 +19,12 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,7 +51,8 @@ import kotlinx.coroutines.yield
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
-    onProductClick: (String) -> Unit // 클릭 리스너 추가
+    onProductClick: (String) -> Unit, // 클릭 리스너 추가
+    onCartClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -55,7 +60,18 @@ fun HomeScreen(
         uiState = uiState,
         onRetry = { viewModel.fetchHomeData() }
     ) { homeData ->
-        BaseScaffold(title = "마켓") { scaffoldPadding ->
+        BaseScaffold(
+            title = "마켓",
+            actions = {
+                // 상단 바 우측에 장바구니 아이콘 배치
+                IconButton(onClick = onCartClick) {
+                    Icon(
+                        imageVector = Icons.Default.ShoppingCart,
+                        contentDescription = "장바구니"
+                    )
+                }
+            }
+        ) { scaffoldPadding ->
             HomeContent(
                 homeData = homeData,
                 modifier = Modifier.padding(scaffoldPadding),

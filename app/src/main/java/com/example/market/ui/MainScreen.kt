@@ -13,6 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.market.ui.cart.CartScreen
 import com.example.market.ui.common.BaseScaffold
 import com.example.market.ui.common.BaseScreen
 import com.example.market.ui.common.UiState
@@ -75,6 +76,9 @@ fun MainScreen() {  // MainScreen은 "어디로 갈지"만 정합니다.
                 HomeScreen(
                     onProductClick = { productId ->
                         navController.navigate(Route.ProductDetail.createRoute(productId))
+                    },
+                    onCartClick = {
+                        navController.navigate(Route.Cart.route)
                     }
                 )
             }
@@ -95,6 +99,10 @@ fun MainScreen() {  // MainScreen은 "어디로 갈지"만 정합니다.
 
             composable(Route.MyPage.route) {
                 Text("마이페이지 화면")
+            }
+
+            composable(Route.Cart.route) { // 테스트를 위해 카테고리 자리에 장바구니를 연결
+                CartScreen(onBackClick = { navController.popBackStack() })
             }
         }
     }

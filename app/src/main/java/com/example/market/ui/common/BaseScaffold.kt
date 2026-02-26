@@ -1,6 +1,7 @@
 package com.example.market.ui.common
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -14,6 +15,7 @@ fun BaseScaffold(
     onBackClick: () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},  // () -> Unit인 Composable을 파라미터로 받고, 주어지지 않는다면 {}을 기본으로 함
     floatingActionButton: @Composable () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
     content: @Composable (PaddingValues) -> Unit // PaddingValues를 파라미터로 받아 Unit을 리턴하는 Composable을 파라미터로 받음
 ) {
     Scaffold(
@@ -29,7 +31,8 @@ fun BaseScaffold(
                             )
                         }
                     }
-                }
+                },
+                actions = actions
             )
         },
         bottomBar = bottomBar,
