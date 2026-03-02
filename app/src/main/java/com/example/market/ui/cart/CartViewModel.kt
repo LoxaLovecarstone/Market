@@ -27,14 +27,19 @@ class CartViewModel @Inject constructor(
     private fun fetchCartItems() {
         viewModelScope.launch {
             cartRepository.getCartItems().collect { items ->
-                _uiState.value = if (items.isEmpty()) UiState.Error else UiState.Success(items)
-            }
+                _uiState.value = UiState.Success(items)}
         }
     }
 
     fun deleteItem(productId: String) {
         viewModelScope.launch {
             cartRepository.deleteCartItem(productId)
+        }
+    }
+
+    fun updateQuantity(productId: String, quantity: Int) {
+        viewModelScope.launch {
+            cartRepository.updateQuantity(productId, quantity)
         }
     }
 }

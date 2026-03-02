@@ -8,9 +8,12 @@ import com.example.market.repository.CartRepository
 import com.example.market.repository.HomeRepository
 import com.example.market.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,6 +30,9 @@ class ProductDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UiState<Product>>(UiState.Loading)
     val uiState: StateFlow<UiState<Product>> = _uiState.asStateFlow()
 
+    private val _event = MutableSharedFlow<String>() // 알림 메시지를 위한 이벤트 스트림
+    val event = _event.asSharedFlow()
+
     init {
         fetchProductDetail()
     }
@@ -40,9 +46,18 @@ class ProductDetailViewModel @Inject constructor(
         }
     }
 
+
     fun addToCart() {
         viewModelScope.launch {
-            cartRepository.addToCart(productId)
+            val currentItems = cartRepository.getCartItems().first() // Flow의 현재 값을 한 번 가져옴
+            val isExisted = currentItems.any { it.product.id == productId }
+
+            if (isExisted) {
+                _event.emit("이미 장바구니에 담긴 상품입니다.")
+            } else {
+                cartRepository.addToCart(productId)
+                _event.emit("장바구니에 담았습니다.")
+            }
         }
     }
 }

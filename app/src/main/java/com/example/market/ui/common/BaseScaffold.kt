@@ -16,7 +16,8 @@ fun BaseScaffold(
     bottomBar: @Composable () -> Unit = {},  // () -> Unit인 Composable을 파라미터로 받고, 주어지지 않는다면 {}을 기본으로 함
     floatingActionButton: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
-    content: @Composable (PaddingValues) -> Unit // PaddingValues를 파라미터로 받아 Unit을 리턴하는 Composable을 파라미터로 받음
+    snackbarHost: @Composable () -> Unit = {},
+    content: @Composable (PaddingValues) -> Unit, // PaddingValues를 파라미터로 받아 Unit을 리턴하는 Composable을 파라미터로 받음,
 ) {
     Scaffold(
         topBar = {
@@ -37,6 +38,7 @@ fun BaseScaffold(
         },
         bottomBar = bottomBar,
         floatingActionButton = floatingActionButton,
+        snackbarHost = snackbarHost,
         content = { innerPadding ->
             content(innerPadding)
         }

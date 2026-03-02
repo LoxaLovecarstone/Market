@@ -5,10 +5,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -26,6 +30,13 @@ fun ProductDetailScreen(
     onBackClick: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { message ->
+            snackbarHostState.showSnackbar(message)
+        }
+    }
 
     BaseScreen(
         uiState = uiState,
@@ -34,9 +45,9 @@ fun ProductDetailScreen(
         BaseScaffold(
             title = "상품 상세",
             showBackButton = true,
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
         ) { padding ->
-            // 💡 여기서 viewModel의 함수를 람다로 넘겨줍니다.
             ProductDetailContent(
                 product = product,
                 modifier = Modifier.padding(padding),
