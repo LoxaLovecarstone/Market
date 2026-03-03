@@ -14,6 +14,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.market.ui.cart.CartScreen
+import com.example.market.ui.category.CategoryScreen
 import com.example.market.ui.common.BaseScaffold
 import com.example.market.ui.common.BaseScreen
 import com.example.market.ui.common.UiState
@@ -94,7 +95,12 @@ fun MainScreen() {  // MainScreen은 "어디로 갈지"만 정합니다.
             }
 
             composable(Route.Category.route) {
-                Text("카테고리 화면")
+                CategoryScreen(
+                    onProductClick = { productId ->
+                        // 상품 클릭 시 상세 화면으로 이동
+                        navController.navigate(Route.ProductDetail.createRoute(productId))
+                    }
+                )
             }
 
             composable(Route.MyPage.route) {
