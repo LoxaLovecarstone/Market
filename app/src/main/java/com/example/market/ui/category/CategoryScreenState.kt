@@ -7,7 +7,10 @@ data class CategoryScreenState(
     val categories: List<Category> = emptyList(),
     val selectedCategoryId: String = "",
     val products: List<Product> = emptyList(),
-    val isProductsLoading: Boolean = false // 오른쪽 상품 목록만 로딩할 때 사용
+    val isProductsLoading: Boolean = false, // 오른쪽 상품 목록만 로딩할 때 사용
+    val searchQuery: String = "",
+    val hasSearched: Boolean = false
+
 )
 
 /*

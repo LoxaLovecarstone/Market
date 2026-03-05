@@ -20,6 +20,7 @@ class HomeRepositoryImpl @Inject constructor() : HomeRepository {
     )
 
     private val mockCategories = listOf(
+        Category("all", "전체", "https://picsum.photos/id/0/200"),
         Category("fruit", "과일", "https://picsum.photos/id/10/200"),
         Category("dairy", "유제품", "https://picsum.photos/id/20/200"),
         Category("bakery", "베이커리", "https://picsum.photos/id/30/200"),
@@ -45,6 +46,22 @@ class HomeRepositoryImpl @Inject constructor() : HomeRepository {
     }
 
     override suspend fun getProductsByCategory(categoryId: String): Result<List<Product>> = runCatching {
-        mockProducts.filter { it.categoryId == categoryId }
+        if (categoryId == "all") {
+            mockProducts // 💡 전체면 필터링 없이 모두 반환
+        } else {
+            mockProducts.filter { it.categoryId == categoryId }
+        }
+    }
+
+    override suspend fun searchProducts(query: String, categoryId: String?): Result<List<Product>> = runCatching {
+        if (query.isBlank()) return@runCatching emptyList()
+
+        mockProducts.filter { product ->
+            val matchesQuery = product.name.contains(query, ignoreCase = true)
+            // 💡 categoryId가 null이거나 "all"이면 전체에서 검색
+            val matchesCategory = categoryId == null || categoryId == "all" || product.categoryId == categoryId
+
+            matchesQuery && matchesCategory
+        }
     }
 }
