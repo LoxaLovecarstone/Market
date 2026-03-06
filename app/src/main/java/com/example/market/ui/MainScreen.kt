@@ -1,5 +1,6 @@
 package com.example.market.ui
 
+import OrderListScreen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,6 +21,7 @@ import com.example.market.ui.common.BaseScreen
 import com.example.market.ui.common.UiState
 import com.example.market.ui.home.HomeScreen
 import com.example.market.ui.home.detail.ProductDetailScreen
+import com.example.market.ui.mypage.MyPageScreen
 import com.example.market.ui.navigation.BottomNavItem
 import com.example.market.ui.navigation.Route
 import kotlinx.coroutines.delay
@@ -104,7 +106,14 @@ fun MainScreen() {  // MainScreen은 "어디로 갈지"만 정합니다.
             }
 
             composable(Route.MyPage.route) {
-                Text("마이페이지 화면")
+                MyPageScreen(onOrderClick = { type ->
+                    navController.navigate(Route.OrderList.createRoute(type))
+                })
+            }
+
+            composable(Route.OrderList.route) { backStackEntry ->
+                val type = backStackEntry.arguments?.getString("type") ?: "shipping"
+                OrderListScreen(type = type, onBackClick = { navController.popBackStack() })
             }
 
             composable(Route.Cart.route) { // 테스트를 위해 카테고리 자리에 장바구니를 연결

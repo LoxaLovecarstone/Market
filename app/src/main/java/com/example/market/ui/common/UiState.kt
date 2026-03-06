@@ -30,7 +30,7 @@ sealed interface UiState<out T> {
      * [Success] : "데이터 로드 성공"
      * - 왜 'class'인가? : 화면마다 가져오는 실제 데이터(T)가 다르므로, 매번 새로운 인스턴스를 생성해 데이터를 담아야 합니다.
      * - 왜 'T'인가? : 제네릭(<>)을 사용하여 어떤 타입의 데이터(상품 리스트, 유저 정보 등)든 유연하게 담기 위함입니다.
-     * * @param data 실제로 UI에 그려줄 결과물 ($T$ 타입)
+     * * @param data 실제로 UI에 그려줄 결과물 (T 타입)
      */
     data class Success<T>(val data: T) : UiState<T>
     // 코틀린은 data class의 생성자를 그대로 멤버로 활용 가능

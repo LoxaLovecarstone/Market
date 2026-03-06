@@ -11,6 +11,10 @@ sealed class Route(val route: String) {
     data object Category: Route("category")
     data object MyPage: Route("mypage")
 
+    data object OrderList : Route("order_list/{type}") {
+        fun createRoute(type: String) = "order_list/$type"
+    }
+
     data object ProductDetail : Route("product/{productId}") {
         fun createRoute(productId: String) = "product/$productId"
     }
