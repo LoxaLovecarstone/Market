@@ -3,9 +3,11 @@ package com.example.market.ui.category
 import app.cash.turbine.test
 import com.example.market.MainDispatcherRule
 import com.example.market.model.category.Category
+import com.example.market.model.common.Product
 import com.example.market.repository.HomeRepository
 import com.example.market.ui.common.UiState
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -88,6 +90,73 @@ class CategoryViewModelTest {
             assertEquals("dairy", data.selectedCategoryId)
 
             // 테스트 종료 후 남아있는 불필요한 이벤트들을 무시하고 관찰을 종료합니다.
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `초기 카테고리 목록을 가져오는 데 실패하면 상태가 Error가 되어야 한다`() = runTest {
+        // [Given] 리포지토리가 실패를 반환하도록 설정
+        coEvery { repository.getCategories() } returns Result.failure(Exception("네트워크 에러"))
+
+        // [When] 뷰모델 생성
+        val viewModel = CategoryViewModel(repository)
+
+        // [Then] 상태 검증
+        viewModel.uiState.test {
+            // expectMostRecentItem()은 중간의 Loading 등을 건너뛰고
+            // 현재 시점의 가장 마지막 상태를 가져옵니다.
+            val finalState = expectMostRecentItem()
+
+            assertTrue("현재 상태가 Error여야 합니다.", finalState is UiState.Error)
+        }
+    }
+
+    @Test
+    fun `검색어를 입력하고 검색을 수행하면 리포지토리에 올바른 인자가 전달되어야 한다`() = runTest {
+        // [Given] 가짜 데이터 및 리포지토리 설정
+        val mockProducts = listOf(
+            Product("p1", "사과", 3000, "", "all")
+        )
+
+        // 정확한 인자가 들어올 때만 결과를 반환하도록 설정
+        coEvery {
+            repository.searchProducts(query = "사과", categoryId = "all")
+        } returns Result.success(mockProducts)
+
+        viewModel.uiState.test {
+            // 1. 초기 상태 소비
+            awaitItem()
+
+            // [When] 검색어 입력
+            viewModel.onQueryChanged("사과")
+
+            // 2. 검색어 반영 상태 낚아채기
+            val stateAfterQuery = awaitItem()
+            assertEquals("사과", (stateAfterQuery as UiState.Success).data.searchQuery)
+
+            // [When] 검색 실행
+            viewModel.performSearch()
+
+            // 3. 병합(Conflation)을 고려하여 최종 상태만 확인
+            // 로딩 상태가 너무 빨리 지나가서 awaitItem()이 안 잡힐 때는
+            // 최종 상태의 data가 우리가 원하는 값인지 확인하면 됩니다.
+            val finalState = expectMostRecentItem()
+
+            assertTrue(finalState is UiState.Success)
+            val data = (finalState as UiState.Success).data
+
+            // 데이터 검증
+            assertEquals(mockProducts, data.products)
+            assertEquals(true, data.hasSearched)
+            assertEquals(false, data.isProductsLoading) // 로딩이 무사히 끝났는지 확인
+
+            // [Verify] 실제로 리포지토리가 "사과", "all"로 호출되었는지 최종 확인
+            coVerify { repository.searchProducts("사과", "all") }
+
+            // coVerify는 코루틴 함수가 호출되었는지 확인
+            // 파라미터 verifyBlock 에는 "해당 코루틴 함수가 실제로 호출된 적이 있는지"를 확인하는 것이 들어간다.
+
             cancelAndIgnoreRemainingEvents()
         }
     }
