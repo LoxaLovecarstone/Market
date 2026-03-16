@@ -81,4 +81,9 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)
+
+    androidTestImplementation(libs.androidx.arch.core.testing)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.turbine)
+    testImplementation(kotlin("test"))
 }
